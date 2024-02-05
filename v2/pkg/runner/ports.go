@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/minofmax/naabu/v2/pkg/port"
+	"github.com/minofmax/naabu/v2/pkg/protocol"
 	"github.com/pkg/errors"
-	"github.com/projectdiscovery/naabu/v2/pkg/port"
-	"github.com/projectdiscovery/naabu/v2/pkg/protocol"
 )
 
 const portListStrParts = 2

@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/projectdiscovery/naabu/v2/internal/testutils"
-	"github.com/projectdiscovery/naabu/v2/pkg/result"
-	"github.com/projectdiscovery/naabu/v2/pkg/runner"
+	"github.com/minofmax/naabu/v2/internal/testutils"
+	"github.com/minofmax/naabu/v2/pkg/result"
+	"github.com/minofmax/naabu/v2/pkg/runner"
 )
 
 var libraryTestcases = map[string]testutils.TestCase{
@@ -36,5 +36,6 @@ func (h *httpxLibrary) Execute() error {
 	}
 	defer naabuRunner.Close()
 
-	return naabuRunner.RunEnumeration()
+	errorMsg, _ := naabuRunner.RunEnumeration()
+	return errorMsg
 }

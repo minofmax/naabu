@@ -147,7 +147,7 @@ To install libcap on **Linux**: `sudo apt install -y libpcap-dev`, on **Mac**: `
 ## Installing Naabu
 
 ```sh
-go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+go install -v github.com/minofmax/naabu/v2/cmd/naabu@latest
 ```
 
 # Running Naabu
@@ -363,8 +363,8 @@ import (
 	"log"
 
 	"github.com/projectdiscovery/goflags"
-	"github.com/projectdiscovery/naabu/v2/pkg/result"
-	"github.com/projectdiscovery/naabu/v2/pkg/runner"
+	"github.com/minofmax/naabu/v2/pkg/result"
+	"github.com/minofmax/naabu/v2/pkg/runner"
 )
 
 func main() {

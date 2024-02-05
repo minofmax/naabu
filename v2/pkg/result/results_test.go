@@ -3,8 +3,8 @@ package result
 import (
 	"testing"
 
-	"github.com/projectdiscovery/naabu/v2/pkg/port"
-	"github.com/projectdiscovery/naabu/v2/pkg/protocol"
+	"github.com/minofmax/naabu/v2/pkg/port"
+	"github.com/minofmax/naabu/v2/pkg/protocol"
 	"github.com/stretchr/testify/assert"
 )
 
