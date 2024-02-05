@@ -1,8 +1,8 @@
 package runner
 
 import (
+	"bytes"
 	"fmt"
-	"os"
 	"os/exec"
 	"sort"
 	"strings"
@@ -101,14 +101,20 @@ func (r *Runner) handleNmap() (error, []byte) {
 					nmapCommand = "nmap.exe"
 				}
 
+				var out bytes.Buffer
+				var stderr bytes.Buffer
+
 				cmd := exec.Command(nmapCommand, args[posArgs:]...)
-				cmd.Stdout = os.Stdout
-				output, _ := cmd.Output()
+				//cmd.Stdout = os.Stdout
+				cmd.Stdout = &out
+				cmd.Stderr = &stderr
 				err := cmd.Run()
+				gologger.Info().Msg(out.String())
+
 				if err != nil {
 					errMsg := errors.Wrap(err, "Could not run nmap command")
 					gologger.Error().Msgf(errMsg.Error())
-					return errMsg, output
+					return errMsg, out.Bytes()
 				}
 			} else {
 				gologger.Info().Msgf("Suggested nmap command: %s -p %s %s", command, portsStr, ipsStr)
