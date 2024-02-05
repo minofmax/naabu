@@ -14,7 +14,7 @@ import (
 	osutil "github.com/projectdiscovery/utils/os"
 )
 
-func (r *Runner) handleNmap() error {
+func (r *Runner) handleNmap() (error, []byte) {
 	// command from CLI
 	command := r.options.NmapCLI
 	hasCLI := r.options.NmapCLI != ""
@@ -102,13 +102,13 @@ func (r *Runner) handleNmap() error {
 				}
 
 				cmd := exec.Command(nmapCommand, args[posArgs:]...)
-
 				cmd.Stdout = os.Stdout
+				output, _ := cmd.Output()
 				err := cmd.Run()
 				if err != nil {
 					errMsg := errors.Wrap(err, "Could not run nmap command")
 					gologger.Error().Msgf(errMsg.Error())
-					return errMsg
+					return errMsg, output
 				}
 			} else {
 				gologger.Info().Msgf("Suggested nmap command: %s -p %s %s", command, portsStr, ipsStr)
@@ -116,7 +116,7 @@ func (r *Runner) handleNmap() error {
 		}
 	}
 
-	return nil
+	return nil, make([]byte, 0)
 }
 
 func isCommandExecutable(args []string) bool {

@@ -35,7 +35,7 @@ func main() {
 		}
 	}()
 
-	err = naabuRunner.RunEnumeration()
+	err, _ = naabuRunner.RunEnumeration()
 	if err != nil {
 		gologger.Fatal().Msgf("Could not run enumeration: %s\n", err)
 	}

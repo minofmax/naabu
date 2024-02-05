@@ -18,9 +18,12 @@ func TestHandleNmap(t *testing.T) {
 	res := result.NewResult()
 	r.scanner = &scan.Scanner{}
 	r.scanner.ScanResults = res
-	assert.Nil(t, r.handleNmap())
+	var err error
+	err, _ = r.handleNmap()
+	assert.Nil(t, err)
 	// nmap syntax error (this test might fail if nmap is not installed on the box)
-	assert.Nil(t, r.handleNmap())
+	//assert.Nil(t, r.handleNmap())
 	r.scanner.ScanResults.SetPorts("127.0.0.1", []*port.Port{{Port: 8080, Protocol: protocol.TCP}})
-	assert.Nil(t, r.handleNmap())
+	err, _ = r.handleNmap()
+	assert.Nil(t, err)
 }

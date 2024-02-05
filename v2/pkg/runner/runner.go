@@ -132,7 +132,7 @@ func NewRunner(options *Options) (*Runner, error) {
 }
 
 // RunEnumeration runs the ports enumeration flow on the targets specified
-func (r *Runner) RunEnumeration() error {
+func (r *Runner) RunEnumeration() (error, []byte) {
 	defer r.Close()
 
 	if privileges.IsPrivileged && r.options.ScanType == SynScan {
@@ -140,25 +140,25 @@ func (r *Runner) RunEnumeration() error {
 		if r.options.SourceIP != "" {
 			err := r.SetSourceIP(r.options.SourceIP)
 			if err != nil {
-				return err
+				return err, make([]byte, 0)
 			}
 		}
 		if r.options.Interface != "" {
 			err := r.SetInterface(r.options.Interface)
 			if err != nil {
-				return err
+				return err, make([]byte, 0)
 			}
 		}
 		if r.options.SourcePort != "" {
 			err := r.SetSourcePort(r.options.SourcePort)
 			if err != nil {
-				return err
+				return err, make([]byte, 0)
 			}
 		}
 
 		err := r.scanner.SetupHandlers()
 		if err != nil {
-			return err
+			return err, make([]byte, 0)
 		}
 		r.BackgroundWorkers()
 	}
@@ -168,7 +168,7 @@ func (r *Runner) RunEnumeration() error {
 	} else {
 		err := r.Load()
 		if err != nil {
-			return err
+			return err, make([]byte, 0)
 		}
 	}
 
@@ -186,13 +186,13 @@ func (r *Runner) RunEnumeration() error {
 		// shrinks the ips to the minimum amount of cidr
 		_, targetsV4, targetsv6, _, err := r.GetTargetIps(r.getPreprocessedIps)
 		if err != nil {
-			return err
+			return err, make([]byte, 0)
 		}
 
 		// get excluded ips
 		excludedIPs, err := r.parseExcludedIps(r.options)
 		if err != nil {
-			return err
+			return err, make([]byte, 0)
 		}
 
 		// store exclued ips to a map
@@ -225,7 +225,7 @@ func (r *Runner) RunEnumeration() error {
 		// check if we should stop here or continue with full scan
 		if r.options.OnlyHostDiscovery {
 			r.handleOutput(r.scanner.HostDiscoveryResults)
-			return nil
+			return nil, make([]byte, 0)
 		}
 	}
 
@@ -272,7 +272,7 @@ func (r *Runner) RunEnumeration() error {
 		}
 		r.wgscan.Wait()
 		r.handleOutput(r.scanner.ScanResults)
-		return nil
+		return nil, make([]byte, 0)
 	case r.options.Stream && r.options.Passive: // stream passive
 		showNetworkCapabilities(r.options)
 		// create retryablehttp instance
@@ -341,7 +341,7 @@ func (r *Runner) RunEnumeration() error {
 		// shrinks the ips to the minimum amount of cidr
 		targets, targetsV4, targetsv6, targetsWithPort, err := r.GetTargetIps(ipsCallback)
 		if err != nil {
-			return err
+			return err, make([]byte, 0)
 		}
 		var targetsCount, portsCount, targetsWithPortCount uint64
 		for _, target := range append(targetsV4, targetsv6...) {
@@ -538,7 +538,7 @@ func (r *Runner) GetTargetIps(ipsCallback func() ([]*net.IPNet, []string)) (targ
 
 func (r *Runner) ShowScanResultOnExit() {
 	r.handleOutput(r.scanner.ScanResults)
-	err := r.handleNmap()
+	err, _ := r.handleNmap()
 	if err != nil {
 		gologger.Fatal().Msgf("Could not run enumeration: %s\n", err)
 	}
