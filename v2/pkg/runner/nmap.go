@@ -110,11 +110,14 @@ func (r *Runner) handleNmap() (error, []byte) {
 				cmd.Stderr = &stderr
 				err := cmd.Run()
 				gologger.Info().Msg(out.String())
+				gologger.Error().Msgf(stderr.String())
 
 				if err != nil {
 					errMsg := errors.Wrap(err, "Could not run nmap command")
 					gologger.Error().Msgf(errMsg.Error())
-					return errMsg, out.Bytes()
+					return errMsg, make([]byte, 0)
+				} else {
+					return nil, out.Bytes()
 				}
 			} else {
 				gologger.Info().Msgf("Suggested nmap command: %s -p %s %s", command, portsStr, ipsStr)
